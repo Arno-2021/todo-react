@@ -4,55 +4,52 @@ class App extends Component {
     render() {
         return (
             <div>
-                <section class='todoapp'>
-                    <header class='header'>
+                <section className='todoapp'>
+                    <header className='header'>
                         <h1>todos</h1>
                         <input
-                            class='new-todo'
+                            className='new-todo'
                             placeholder='What needs to be done?'
-                            autofocus
+                            autoFocus
                         />
                     </header>
-                    <section class='main'>
+                    <section className='main'>
                         <input
                             id='toggle-all'
-                            class='toggle-all'
+                            className='toggle-all'
                             type='checkbox'
                         />
-                        <label for='toggle-all'>Mark all as complete</label>
-                        <ul class='todo-list'>
-                            <li class='completed'>
-                                <div class='view'>
+                        <label htmlFor='toggle-all'>Mark all as complete</label>
+                        <ul className='todo-list'>
+                            <li className='completed'>
+                                <div className='view'>
                                     <input
-                                        class='toggle'
+                                        className='toggle'
                                         type='checkbox'
-                                        checked
                                     />
                                     <label>Taste JavaScript</label>
-                                    <button class='destroy'></button>
+                                    <button className='destroy'></button>
                                 </div>
                                 <input
-                                    class='edit'
-                                    value='Create a TodoMVC template'
+                                    className='edit'
                                 />
                             </li>
                             <li>
-                                <div class='view'>
-                                    <input class='toggle' type='checkbox' />
+                                <div className='view'>
+                                    <input className='toggle' type='checkbox' />
                                     <label>Buy a unicorn</label>
-                                    <button class='destroy'></button>
+                                    <button className='destroy'></button>
                                 </div>
-                                <input class='edit' value='Rule the web' />
                             </li>
                         </ul>
                     </section>
-                    <footer class='footer'>
-                        <span class='todo-count'>
+                    <footer className='footer'>
+                        <span className='todo-count'>
                             <strong>0</strong> item left
                         </span>
-                        <ul class='filters'>
+                        <ul className='filters'>
                             <li>
-                                <a class='selected' href='#/'>
+                                <a className='selected' href='#/'>
                                     All
                                 </a>
                             </li>
@@ -63,10 +60,12 @@ class App extends Component {
                                 <a href='#/completed'>Completed</a>
                             </li>
                         </ul>
-                        <button class='clear-completed'>Clear completed</button>
+                        <button className='clear-completed'>
+                            Clear completed
+                        </button>
                     </footer>
                 </section>
-                <footer class='info'>
+                <footer className='info'>
                     <p>Double-click to edit a todo</p>
                     <p>
                         Template by{' '}
