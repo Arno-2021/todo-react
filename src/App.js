@@ -1,83 +1,135 @@
 import { Component } from 'react'
-
+import Header from './components/Header'
+import Main from './components/Main'
+import Footer from './components/Footer'
 class App extends Component {
+    state = {
+        list: JSON.parse(localStorage.getItem('list')) || [],
+        tabs: ['All', 'Active', 'Complete'],
+        checked: 'All',
+        checkedAll: false,
+    }
+    addList = content => {
+        const obj = {
+            id: Date.now(),
+            content: content,
+            done: false,
+            isEdit: false,
+        }
+        this.setState({
+            list: [obj, ...this.state.list],
+        })
+    }
+    del = id => {
+        this.setState({
+            list: this.state.list.filter(item => item.id !== id),
+        })
+    }
+    switchTabs = type => {
+        this.setState({
+            checked: type,
+        })
+    }
+    changeDone = (id, done) => {
+        this.setState({
+            list: this.state.list.map(item => {
+                if (item.id === id) {
+                    return {
+                        ...item,
+                        done: !done,
+                    }
+                } else {
+                    return item
+                }
+            }),
+        })
+    }
+    toggleAll = checked => {
+        this.setState({
+            checkedAll: !checked,
+            list: this.state.list.map(item => {
+                return {
+                    ...item,
+                    done: !checked,
+                }
+            }),
+        })
+    }
+    clearCompleted = () => {
+        this.setState({
+            list: this.state.list.filter(item => item.done === false),
+        })
+    }
+    showEdit = id => {
+        this.setState({
+            list: this.state.list.map(item => {
+                if (item.id === id) {
+                    return {
+                        ...item,
+                        isEdit: !item.isEdit,
+                    }
+                } else {
+                    return item
+                }
+            }),
+        })
+    }
+    editList = (id, content) => {
+        this.setState({
+            list: this.state.list.map(item => {
+                if (item.id === id) {
+                    return {
+                        ...item,
+                        content,
+                        isEdit: false,
+                    }
+                } else {
+                    return item
+                }
+            }),
+        })
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.list !== prevState.list) {
+            localStorage.setItem('list', JSON.stringify(this.state.list))
+            this.setState({
+                checkedAll: this.state.list.every(item => item.done === true),
+            })
+        }
+    }
     render() {
+        const { list, tabs, checked, checkedAll } = this.state
+        let showList = []
+        if (checked === 'Active') {
+            showList = [...list].filter(item => item.done === false)
+        } else if (checked === 'Complete') {
+            showList = [...list].filter(item => item.done === true)
+        } else {
+            showList = [...list]
+        }
         return (
             <div>
                 <section className='todoapp'>
-                    <header className='header'>
-                        <h1>todos</h1>
-                        <input
-                            className='new-todo'
-                            placeholder='What needs to be done?'
-                            autoFocus
-                        />
-                    </header>
-                    <section className='main'>
-                        <input
-                            id='toggle-all'
-                            className='toggle-all'
-                            type='checkbox'
-                        />
-                        <label htmlFor='toggle-all'>Mark all as complete</label>
-                        <ul className='todo-list'>
-                            <li className='completed'>
-                                <div className='view'>
-                                    <input
-                                        className='toggle'
-                                        type='checkbox'
-                                    />
-                                    <label>Taste JavaScript</label>
-                                    <button className='destroy'></button>
-                                </div>
-                                <input
-                                    className='edit'
-                                />
-                            </li>
-                            <li>
-                                <div className='view'>
-                                    <input className='toggle' type='checkbox' />
-                                    <label>Buy a unicorn</label>
-                                    <button className='destroy'></button>
-                                </div>
-                            </li>
-                        </ul>
-                    </section>
-                    <footer className='footer'>
-                        <span className='todo-count'>
-                            <strong>0</strong> item left
-                        </span>
-                        <ul className='filters'>
-                            <li>
-                                <a className='selected' href='#/'>
-                                    All
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#/active'>Active</a>
-                            </li>
-                            <li>
-                                <a href='#/completed'>Completed</a>
-                            </li>
-                        </ul>
-                        <button className='clear-completed'>
-                            Clear completed
-                        </button>
-                    </footer>
+                    <Header addList={this.addList}></Header>
+                    <Main
+                        list={showList}
+                        del={this.del}
+                        changeDone={this.changeDone}
+                        checkedAll={checkedAll}
+                        toggleAll={this.toggleAll}
+                        showEdit={this.showEdit}
+                        editList={this.editList}
+                    ></Main>
+                    {list.length === 0 ? null : (
+                        <Footer
+                            list={list}
+                            tabs={tabs}
+                            checked={checked}
+                            switchTabs={this.switchTabs}
+                            clearCompleted={this.clearCompleted}
+                        ></Footer>
+                    )}
                 </section>
-                <footer className='info'>
-                    <p>Double-click to edit a todo</p>
-                    <p>
-                        Template by{' '}
-                        <a href='http://sindresorhus.com'>Sindre Sorhus</a>
-                    </p>
-                    <p>
-                        Created by <a href='http://todomvc.com'>you</a>
-                    </p>
-                    <p>
-                        Part of <a href='http://todomvc.com'>TodoMVC</a>
-                    </p>
-                </footer>
             </div>
         )
     }
